@@ -29,6 +29,17 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
+  mysql:
+    image: mysql:8.0
+    command: mysqld --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - volume-mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: sandbox
   rebbitmq:
     image: rabbitmq:3-management
     restart: always
@@ -45,4 +56,5 @@ volumes:
   volume-redis-main: {}
   volume-redis-replica: {}
   volume-mongo: {}
+  volume-mysql: {}
   volume-rabbitmq: {}
