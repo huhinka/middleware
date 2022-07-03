@@ -13,7 +13,7 @@ mongo <<EOF
             {
                 "_id": 1,
                 host: '192.168.50.62:30012',
-                "priority": 0
+                "priority": 1
             },
             {
                 "_id": 2,
