@@ -12,6 +12,17 @@ keyfile 是节点间用于认证的文件。
 
 ```shell
 openssl rand -base64 755 > keyfile
+chmod 400 keyfile
+chown 999:999 keyfile
+```
+
+### 文件权限
+
+```shell
+chown 999:999 setup.sh
+chmod 755 setup.sh
+chown 999:999 create_user.sh
+chmod 755 create_user.sh
 ```
 
 ### 启动并初始化
