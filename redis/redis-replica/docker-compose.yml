@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+  master:
+    image: redis:6.2.3
+    container_name: redis-master
+    hostname: redis-master
+    restart: always
+    command: redis-server --requirepass redispwd  --appendonly yes
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-master-data:/data
+  slave1:
+    image: redis:6.2.3
+    container_name: redis-slave-1
+    hostname: redis-slave-1
+    restart: always
+    command: redis-server --slaveof redis-master 6379  --requirepass redispwd --masterauth redispwd  --appendonly yes
+    ports:
+      - 6380:6379
+    volumes:
+      - redis-slave-1:/data
+  slave2:
+    image: redis:6.2.3
+    container_name: redis-slave-2
+    hostname: redis-slave-2
+    restart: always
+    command: redis-server --slaveof redis-master 6379  --requirepass redispwd --masterauth redispwd  --appendonly yes
+    ports:
+      - 6381:6379
+    volumes:
+      - redis-slave-2:/data
+
+volumes:
+  redis-master-data: {}
+  redis-slave-1: {}
+  redis-slave-2: {}
