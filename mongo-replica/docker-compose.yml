@@ -9,7 +9,8 @@ services:
     volumes:
       - ./keyfile:/keyfile
       - mongo2_data:/data/db
-    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile
+      - mongo2_logs:/var/log/mongodb
+    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
     restart: always
 
   mongo3:
@@ -21,7 +22,8 @@ services:
     volumes:
       - ./keyfile:/keyfile
       - mongo3_data:/data/db
-    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile
+      - mongo3_logs:/var/log/mongodb
+    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
     restart: always
 
   mongo1:
@@ -35,11 +37,15 @@ services:
       - ./setup.sh:/setup.sh
       - ./keyfile:/keyfile
       - mongo1_data:/data/db
-    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile
+      - mongo1_logs:/var/log/mongodb
+    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
     restart: always
 
 volumes:
   mongo1_data: {}
+  mongo1_logs: {}
   mongo2_data: {}
+  mongo2_logs: {}
   mongo3_data: {}
+  mongo3_logs: {}
 
