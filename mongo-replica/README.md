@@ -13,7 +13,6 @@ MacOS、Linux 下 MongoDB Replica Set 单机部署示例。
 - password: admin
 - replicaSet: vision-set
 
-
 ## 操作步骤
 
 ### 生成 keyfile
@@ -58,9 +57,7 @@ docker exec mongo1 /create_user.sh
 
 ### 配置 Hostname
 
-> 可选操作
-
-为了更方便访问 MongoDB 节点，配置 hosts
+配置 hosts，确保本地能够知道 mongo1 等节点的地址。
 
 ```shell
 > sudo vim /etc/hosts
@@ -83,7 +80,7 @@ docker exec mongo1 /create_user.sh
 mongodb://admin:admin@mongo1:30011,mongo2:30012/?replicaSet=vision-set
 ```
 
-如果没有配置 Hostname 则使用以下 URL：
+或者使用 localhost:
 
 ```shell
 mongodb://admin:admin@localhost:30011,localhost:30012/?replicaSet=vision-set
