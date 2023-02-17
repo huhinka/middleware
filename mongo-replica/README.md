@@ -57,7 +57,8 @@ docker exec mongo1 /create_user.sh
 
 ### 配置 Hostname
 
-配置 hosts，确保本地能够知道 mongo1 等节点的地址。
+配置 hosts，确保本地能够通过 mongo1 等节点的地址访问 MongoDB。
+如果不配置将无法访问集群。
 
 ```shell
 > sudo vim /etc/hosts
