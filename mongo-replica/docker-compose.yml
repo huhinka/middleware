@@ -1,44 +1,44 @@
 version: '3'
 services:
-  mongo2:
-    container_name: "mongo2"
-    image: mongo:4.4.14
-    hostname: mongo2
-    ports:
-      - "30012:27017"
-    volumes:
-      - ./keyfile:/keyfile
-      - mongo2_data:/data/db
-      - mongo2_logs:/var/log/mongodb
-    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
-    restart: always
-
-  mongo3:
-    container_name: "mongo3"
-    image: mongo:4.4.14
-    hostname: mongo3
-    ports:
-      - "30013:27017"
-    volumes:
-      - ./keyfile:/keyfile
-      - mongo3_data:/data/db
-      - mongo3_logs:/var/log/mongodb
-    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
-    restart: always
-
   mongo1:
-    container_name: "mongo1"
     image: mongo:4.4.14
     hostname: mongo1
+    container_name: mongo1
     ports:
-      - "30011:27017"
+      - 30011:30011
     volumes:
       - ./create_user.sh:/create_user.sh
       - ./setup.sh:/setup.sh
       - ./keyfile:/keyfile
       - mongo1_data:/data/db
       - mongo1_logs:/var/log/mongodb
-    command: mongod --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
+    command: mongod --port 30011 --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
+    restart: always
+
+  mongo2:
+    image: mongo:4.4.14
+    hostname: mongo2
+    container_name: mongo2
+    ports:
+      - 30012:30012
+    volumes:
+      - ./keyfile:/keyfile
+      - mongo2_data:/data/db
+      - mongo2_logs:/var/log/mongodb
+    command: mongod --port 30012 --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
+    restart: always
+
+  mongo3:
+    image: mongo:4.4.14
+    hostname: mongo3
+    container_name: mongo3
+    ports:
+      - 30013:30013
+    volumes:
+      - ./keyfile:/keyfile
+      - mongo3_data:/data/db
+      - mongo3_logs:/var/log/mongodb
+    command: mongod --port 30013 --replSet vision-set --bind_ip 0.0.0.0 --keyFile /keyfile --logpath /var/log/mongodb/mongodb.log
     restart: always
 
 volumes:

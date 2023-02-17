@@ -1,12 +1,22 @@
 # MongoDB Replica Set
 
-MongoDB Replica Set 单机部署。
+MacOS、Linux 下 MongoDB Replica Set 单机部署示例。
 
-只用于本地测试。生产环境需要部署到不同的服务器上。
+> **警告**
+> 此项目仅适用于本地测试，生产环境请将副本部署到不同的服务器上。
 
-## Usage
+## 默认设置
 
-### 生成 keyfile：
+- hostname: mongo1、mongo2、mongo3
+- port: 30011、30012、30013
+- username: admin
+- password: admin
+- replicaSet: vision-set
+
+
+## 操作步骤
+
+### 生成 keyfile
 
 keyfile 是节点间用于认证的文件。
 
@@ -16,7 +26,7 @@ chmod 400 keyfile
 chown 999:999 keyfile
 ```
 
-### 文件权限
+### 修改文件权限
 
 ```shell
 chown 999:999 setup.sh
@@ -27,73 +37,54 @@ chmod 755 create_user.sh
 
 ### 启动并初始化
 
-修改 `setup.sh`，配置其中的所有节点的 host 地址与端口，改为本地 IP 与容器对外的端口。
-
-```bash
-#!/bin/bash
-
-mongo <<EOF
-    var cfg = {
-        _id: 'vision-set',
-        "version": 1,
-        "members": [
-            {
-                "_id": 0,
-                host: '192.168.50.62:30011',
-                "priority": 2
-            },
-            {
-                "_id": 1,
-                host: '192.168.50.62:30012',
-                "priority": 0
-            },
-            {
-                "_id": 2,
-                host: '192.168.50.62:30013',
-                "priority": 0
-            }
-        ]
-    };
-    rs.initiate(cfg, { force: true });
-    //rs.reconfig(cfg, { force: true });
-    rs.status();
-EOF
-```
-
-修改 `create_user.sh` 配置需要的 admin 账户。
+如果需要修改数据库修改 `create_user.sh` 配置需要的 admin 账户。
 目前默认的是账户密码是 `admin`、`admin`。
-```shell
-#!/bin/bash
 
-mongo <<EOF
-   use admin;
-   admin = db.getSiblingDB("admin");
-   admin.createUser(
-     {
-	user: "admin",
-        pwd: "admin",
-        roles: [ { role: "root", db: "admin" } ]
-     });
-     db.getSiblingDB("admin").auth("admin", "admin");
-     rs.status();
-EOF
+```shell
+# 启动
+docker compose up -d
 ```
 
 ```shell
-docker compose up -d
-# 配置 Replica Set
+# 配置 Replica Set，并等待几秒保证选举出主节点
 docker exec mongo1 /setup.sh
+```
+
+```shell
 # 创建用户
-# 等待节点选举出 PRIMARY 节点后再创建用户
+# 注意：需等待节点选举出 PRIMARY 节点后再创建用户
 docker exec mongo1 /create_user.sh
+```
+
+### 配置 Hostname
+
+> 可选操作
+
+为了更方便访问 MongoDB 节点，配置 hosts
+
+```shell
+> sudo vim /etc/hosts
+
+# Local MongoDB
+127.0.0.1      mongo1
+127.0.0.1      mongo2
+127.0.0.1      mongo3
 ```
 
 ### 客户端连接 Replica Set
 
-连接地址需要添加 SECONDARY 地址保证主节点故障时客户端可以无缝切换。
+连接地址需要添加 SECONDARY 地址保证主节点故障时客户端可以主动切换。
 
 连接参数需要添加 `replicaSet` 参数，并与前面配置的一致。
 
+部署完成后可以通过以下 URL 访问 MongoDB：
+
 ```shell
-mongodb://KF:mango252@localhost:30011,localhost:30012,localhost:30013/vsp-api?replicaSet=vision-set
+mongodb://admin:admin@mongo1:30011,mongo2:30012/?replicaSet=vision-set
+```
+
+如果没有配置 Hostname 则使用以下 URL：
+
+```shell
+mongodb://admin:admin@localhost:30011,localhost:30012/?replicaSet=vision-set
 ```
