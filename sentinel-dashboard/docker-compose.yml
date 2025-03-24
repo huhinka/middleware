@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  sentinel:
+    image: fank243/sentinel-dashboard:1.8.2
+    hostname: sentinel
+    container_name: sentinel
+    restart: unless-stopped
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./sentinel.properties:/app/application.properties
+      - ./logs:/root/logs/csp
+    ports:
+      - "8858:8858"
+      - "8719:8719"
+
