@@ -70,6 +70,20 @@ services:
       POSTGRES_PASSWORD: 123456
     volumes:
       - volume-postgresql:/var/lib/postgresql
+  emqx:
+    image: emqx/emqx:5.6.1
+    restart: always
+    ports:
+      - 1883:1883
+      - 8081:8081
+      - 8883:8883
+      - 8084:8084
+      - 18083:18083
+  influxdb:
+    image: influxdb:2.4.0
+    restart: always
+    ports:
+      - 8086:8086
 
 
 volumes:
